@@ -1,48 +1,44 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(srdfdom)
 
+include(GNUInstallDirs)
+
 find_package(Boost REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
-find_package(console_bridge REQUIRED)
 find_package(urdfdom_headers REQUIRED)
+find_package(PkgConfig)
+pkg_check_modules(TinyXML tinyxml)
 
-find_package(catkin REQUIRED COMPONENTS cmake_modules urdfdom_py)
+include_directories(include ${TinyXML_INCLUDE_DIRS} ${urdfdom_headers_INCLUDE_DIRS})
 
-find_package(TinyXML REQUIRED)
-
-include_directories(include ${TinyXML_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS} ${urdfdom_headers_INCLUDE_DIRS})
-link_directories(${catkin_LIBRARY_DIRS})
-
-catkin_python_setup()
-
-catkin_package(
-  LIBRARIES ${PROJECT_NAME}
-  INCLUDE_DIRS include ${TinyXML_INCLUDE_DIRS}
-  DEPENDS console_bridge urdfdom_headers urdfdom_py
-)
-
-add_library(${PROJECT_NAME} 
+add_library(${PROJECT_NAME} SHARED
   src/model.cpp
   src/srdf_writer.cpp
 )
-target_link_libraries(${PROJECT_NAME} ${TinyXML_LIBRARIES} ${catkin_LIBRARIES} ${console_bridge_LIBRARIES} ${urdfdom_headers_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${TinyXML_LIBRARIES} ${urdfdom_headers_LIBRARIES})
 
 
 install(TARGETS ${PROJECT_NAME}
-  DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.h"
 )
 
 install(PROGRAMS 
   scripts/display_srdf
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest(test/srdf_parser.test)
-endif()
+install(FILES package.xml DESTINATION
+  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
+
+set(PKG_DESC "Semantic Robot Description Format")
+set(PKG_DEPENDS "urdfdom_headers tinyxml") # make the list separated by spaces instead of ;
+set(PKG_URDF_LIBS "-l${PROJECT_NAME}")
+set(pkg_conf_file "cmake/pkgconfig/srdfdom.pc")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${pkg_conf_file}.in" "${CMAKE_BINARY_DIR}/${pkg_conf_file}" @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/${pkg_conf_file}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/ COMPONENT pkgconfig)
