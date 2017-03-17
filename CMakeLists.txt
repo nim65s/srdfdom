@@ -36,7 +36,8 @@ install(FILES package.xml DESTINATION
   ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
 
 set(PKG_DESC "Semantic Robot Description Format")
-set(PKG_DEPENDS "urdfdom_headers tinyxml") # make the list separated by spaces instead of ;
+set(URDF_VERSION 0.50.0)
+set(PKG_DEPENDS "urdfdom_headers >= 0.50 tinyxml") # make the list separated by spaces instead of ;
 set(PKG_URDF_LIBS "-l${PROJECT_NAME}")
 set(pkg_conf_file "cmake/pkgconfig/srdfdom.pc")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${pkg_conf_file}.in" "${CMAKE_BINARY_DIR}/${pkg_conf_file}" @ONLY)
