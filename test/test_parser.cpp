@@ -42,7 +42,7 @@
 
 namespace urdf
 {
-typedef boost::shared_ptr<const ::urdf::ModelInterface> ModelInterfaceSharedPtr;
+typedef std::shared_ptr<const ::urdf::ModelInterface> ModelInterfaceSharedPtr;
 }
 
 #define EXPECT_TRUE(arg) if (!(arg)) throw std::runtime_error("Assertion failed at line " + boost::lexical_cast<std::string>(__LINE__))

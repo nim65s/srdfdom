@@ -184,7 +184,7 @@ public:
 // ******************************************************************************************
 // Typedef
 // ******************************************************************************************
-typedef boost::shared_ptr<SRDFWriter> SRDFWriterPtr;
+typedef std::shared_ptr<SRDFWriter> SRDFWriterPtr;
 
 
 }

@@ -47,7 +47,7 @@
 
 namespace urdf
 {
-typedef boost::shared_ptr<const ::urdf::Link> LinkConstSharedPtr;
+typedef std::shared_ptr<const ::urdf::Link> LinkConstSharedPtr;
 }
 
 /// Main namespace
@@ -275,8 +275,8 @@ private:
   std::vector<DisabledCollision> disabled_collisions_;
   std::vector<PassiveJoint>      passive_joints_;
 };
-typedef boost::shared_ptr<Model> ModelSharedPtr;
-typedef boost::shared_ptr<const Model> ModelConstSharedPtr;
+typedef std::shared_ptr<Model> ModelSharedPtr;
+typedef std::shared_ptr<const Model> ModelConstSharedPtr;
 
 
 }
